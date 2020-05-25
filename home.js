@@ -90,34 +90,34 @@ function featuringTemplate(peli){
     </div>
 </div>`)
 }
-async function cacheExist(category){
-  const listName = `${category}-list`
-  const cacheList = window.localStorage.getItem(listName)
+async function cacheExist(category) {
+  const listName = `${category}List`;
+  const cacheList = window.localStorage.getItem(listName);
 
-  if(cacheList){
-    return JSON.parse(cacheList)
-  }else{
-    const {data:{movies: data}} = await getData(`${BASE_API}${listName}_movies.json`)
-    window.localStorage.setItem(listName, JSON.stringify(data))
-    return data
+  if (cacheList) {
+    return JSON.parse(cacheList);
   }
+  const { data: { movies: data } } = await getData(`${BASE_API}list_movies.json?genre=${category}`)
+  window.localStorage.setItem(listName, JSON.stringify(data))
+
+  return data;
 }
 
 // const actionList = await getData('https://yts.am/api/v2/list_movies.json?genre=action')
 // const dramaList = await getData('https://yts.am/api/v2/list_movies.json?genre=drama')
 // const animationList = await getData('https://yts.am/api/v2/list_movies.json?genre=animation')
-//const BASE_API2 = "https://yts.am/api/v2/"
-const BASE_API = "http://127.0.0.1:5500/src/data/"
+const BASE_API = "https://yts.am/api/v2/"
+// const BASE_API2 = "http://127.0.0.1:5500/src/data/"
 
-const actionList = await cacheExist("Action");
+const actionList = await cacheExist("action");
 const $actionContainer = document.getElementById("action")
 renderMovieList(actionList, $actionContainer, "action")
 
-const dramaList = await cacheExist("Drama");
+const dramaList = await cacheExist("drama");
 const $dramaContainer = document.getElementById('drama')
 renderMovieList(dramaList, $dramaContainer, "drama")
 
-const animationList = await cacheExist("Animation");
+const animationList = await cacheExist("animation");
 const $animationContainer = document.getElementById("animation")
 renderMovieList(animationList, $animationContainer, "animation")
 
@@ -137,9 +137,9 @@ $form.addEventListener("submit", async(e)=>{
 
   $featuringContainer.append($loader)
   const data = new FormData($form)
-  //const peli = await getData(`${BASE_API}list_movies.json?limit=1&query_term=${data.get('name')}`)
   try {
-    const {data: { movies: pelis }} = await getData(`${BASE_API}Drama-list_movies.json?limit=1&query_term=${data.get('name')}`)
+    const {data: { movies: pelis }} = await getData(`${BASE_API}list_movies.json?limit=1&query_term=${data.get('name')}`)
+    // const {data: { movies: pelis }} = await getData(`${BASE_API}Drama-list_movies.json?limit=1&query_term=${data.get('name')}`)
     const HTMLString = featuringTemplate(pelis[0])
     $featuringContainer.innerHTML = HTMLString
   } catch (error) {
